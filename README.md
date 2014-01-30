@@ -11,6 +11,8 @@ Commented script that runs the code in the paper below. This was written to test
 The same code can be seen by running the examples in nlmeODE PKPmodels
     
     > help(PKPDmodels)
+    
+Documentation for the nlmeODE (R) package: http://cran.r-project.org/web/packages/nlmeODE/nlmeODE.pdf
 
 ### Reference:
 
