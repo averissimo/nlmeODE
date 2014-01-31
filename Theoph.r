@@ -41,21 +41,21 @@ plot(data.grp, xlab = paste(labels$x, units$x), ylab = paste(labels$y, units$y) 
 # setting 1st compartiment of diff. equation (1 of 1)
 OneComp <- list( DiffEq = list( dy1dt = ~ -ka * y1,
                                 dy2dt = ~ ka * y1 - ke * y2 ),
-                 ObsEq  = list(c1 = ~ 0, c2 = ~ y2/CL*ke),
-                 #ObsEq  = list( SC ~ 0, Cp ~ y2 / CL * ke),
+                 #ObsEq  = list(c1 = ~ 0, c2 = ~ y2/CL*ke), #from pkmodels
+                 ObsEq  = list( SC ~ 0, Cp ~ y2 / CL * ke),
                  Parms  = c("ka", "ke", "CL"),
                  States = c("y1", "y2"),
                  Init   = list(0,0)
                  )
 
 # create nlmeODE model
-model = nlmeODE( OneComp, data, 
+model = nlmeODE( OneComp, data.grp, 
                  LogParms = T, JAC = T, SEQ = F, rtol = 0.01, atol = 0.01)
 
 # apply nlme to model with random effects:
 #  ka + ke + CL (all variables)
 data.nlme.ka_ke_CL <- nlme( conc ~ model( ka, ke, CL, Time, Subject ),
-                   data    = data,
+                   data    = data.grp,
                    fixed   = ka + ke + CL ~ 1,
                    random  = pdDiag( ka + ke + CL ~ 1 ),
                    start   = c( ka = log(1.65), ke = log(0.08), CL = log(0.05) ),
