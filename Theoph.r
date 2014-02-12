@@ -56,8 +56,8 @@ model = nlmeODE( OneComp, data.grp,
 #  ka + ke + CL (all variables)
 data.nlme.ka_ke_CL <- nlme( conc ~ model( ka, ke, CL, Time, Subject ),
                    data    = data.grp,
-                   fixed   = ka + ke + CL ~ 1,
-                   random  = pdDiag( ka + ke + CL ~ 1 ),
+                   fixed   = list( ka + ke + CL ~ 1) ,
+                   random  = pdDiag(ka + ke + CL ~ 1),
                    start   = c( ka = log(1.65), ke = log(0.08), CL = log(0.05) ),
                    control = list( returnObject = T, msVerbose = T ),
                    verbose = T)

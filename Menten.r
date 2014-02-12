@@ -18,30 +18,7 @@ library(deSolve)
 library(nlme)
 library(nlmeODE)
 
-# setting data (sample data taken from: http://www.erithacus.co.uk/grafit/grafit_demonstration.htm )
-rate = c(); conc = c(); subj = c()
-
-# subject 1
-rate = c(rate, 1.00, 2.00, 3.00, 4.00, 5.00, 6.00)
-conc = c(conc, 2.80, 4.05, 4.90, 5.50, 6.00, 6.30)
-subj = c(subj, rep(1, 6))
-
-# subject 2
-rate = c(rate, 1.00, 2.00, 3.00, 4.00, 5.00, 6.00)
-conc = c(conc, 2.80, 4.05, 4.90, 5.50, 6.00, 6.30) + rnorm(6, 0, 0.1)
-subj = c(subj, rep(2, 6))
-
-# subject 3
-rate = c(rate, 1.00, 2.00, 3.00, 4.00, 5.00, 6.00)
-conc = c(conc, 2.80, 4.05, 4.90, 5.50, 6.00, 6.30) + rnorm(6, 0, .2)
-subj = c(subj, rep(3, 6))
-
-# subject 4
-rate = c(rate, 1.00, 2.00, 3.00, 4.00, 5.00, 6.00)
-conc = c(conc, 2.80, 4.05, 4.90, 5.50, 6.00, 6.30) + rnorm(6, 0, .3)
-subj = c(subj, rep(4, 6))
-
-data <- data.frame(Time = conc, conc = rate, Subject = subj )
+data <- data.frame(Time = Theoph$Time, conc = Theoph$conc, Subject = Theoph$Subject )
 
 # create groupedData object that separates the data per Subject
 data.grp = groupedData( conc ~ Time | Subject, data = data )
@@ -58,12 +35,12 @@ units  = list(x = "", y = "")
 plot(data.grp, xlab = paste(labels$x, units$x), ylab = paste(labels$y, units$y) )
 
 # setting 1st compartiment of diff. equation (1 of 1)
-OneComp <- list( DiffEq = list( dy1dt = ~ Vmax * y1 / Km + y1),
+OneComp <- list( DiffEq = list( dSdt = ~ - (Vmax * S) / (Km + S)),
                  ObsEq  = list( 
-                   c1 = ~ y1),
+                   c1 = ~ S),
                  Parms  = c("Vmax", "Km"),
-                 States = c("y1"),
-                 Init   = list(0))
+                 States = c("S"),
+                 Init   = list(8))
 
 # create nlmeODE model
 model = nlmeODE( OneComp, data.grp, 
